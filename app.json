@@ -1,0 +1,70 @@
+{
+  "expo": {
+    "name": "Instead",
+    "slug": "instead",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "instead",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0B0F17",
+    "splash": {
+      "backgroundColor": "#0B0F17"
+    },
+    "android": {
+      "package": "com.instead.app",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#0B0F17"
+      },
+      "permissions": [
+        "android.permission.VIBRATE",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.SCHEDULE_EXACT_ALARM"
+      ],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "instead"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
+    },
+    "ios": {
+      "bundleIdentifier": "com.instead.app",
+      "buildNumber": "1",
+      "supportsTablet": false,
+      "infoPlist": {
+        "LSApplicationQueriesSchemes": [
+          "duolingo",
+          "babbel",
+          "anki",
+          "peak",
+          "instapaper",
+          "googlenews",
+          "ibooks",
+          "kindle",
+          "googlegmail",
+          "message",
+          "snssdk1233",
+          "tiktok",
+          "youtube",
+          "instagram"
+        ]
+      }
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "experiments": {
+      "typedRoutes": false
+    }
+  }
+}
