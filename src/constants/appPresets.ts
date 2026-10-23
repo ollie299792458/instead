@@ -55,18 +55,18 @@ export const APP_REDIRECT_PRESETS: Record<string, AppRedirectPreset[]> = {
       webFallbackUrl: 'https://www.instapaper.com',
     },
     {
-      id: 'pocket',
-      name: 'Pocket',
-      iosScheme: 'pocket://',
-      androidPackage: 'com.ideashower.readitlater.pro',
-      webFallbackUrl: 'https://getpocket.com',
-    },
-    {
       id: 'omnivore',
       name: 'Omnivore',
       iosScheme: 'omnivore://',
       androidPackage: 'app.omnivore.client',
       webFallbackUrl: 'https://omnivore.app',
+    },
+    {
+      id: 'readwise_reader',
+      name: 'Readwise Reader',
+      iosScheme: 'readwise://',
+      androidPackage: 'com.readwise',
+      webFallbackUrl: 'https://read.readwise.io',
     },
   ],
   'alt-readingbook': [

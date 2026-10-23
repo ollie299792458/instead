@@ -3,13 +3,13 @@ import { Alternative, ChecklistItem, PauseSession, Reason } from '../types/inste
 import { DIY_SUGGESTIONS, SEED_ALTERNATIVES, STARTER_REASONS } from './seed';
 
 const STORAGE_KEYS = {
-  REASONS: '@instead_reasons_v5',
-  ALTERNATIVES: '@instead_alternatives_v5',
-  CHECKLIST_ITEMS: '@instead_checklist_items_v5',
-  SESSIONS: '@instead_sessions_v5',
-  PROMISE_STREAK: '@instead_streak_v5',
-  INITIALIZED: '@instead_initialized_v5',
-  LAST_SHOWN_REASONS: '@instead_last_shown_reasons_v5',
+  REASONS: '@instead_reasons_v6',
+  ALTERNATIVES: '@instead_alternatives_v6',
+  CHECKLIST_ITEMS: '@instead_checklist_items_v6',
+  SESSIONS: '@instead_sessions_v6',
+  PROMISE_STREAK: '@instead_streak_v6',
+  INITIALIZED: '@instead_initialized_v6',
+  LAST_SHOWN_REASONS: '@instead_last_shown_reasons_v6',
 };
 
 export interface AppStateData {

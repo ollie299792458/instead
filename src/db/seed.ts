@@ -78,7 +78,7 @@ export const SEED_ALTERNATIVES: Omit<Alternative, 'timesSuggested' | 'timesChose
     id: 'alt-instapaper',
     title: 'Saved Articles',
     category: 'Read',
-    subtitle: 'Read 1 longform article (Instapaper / Pocket)',
+    subtitle: 'Read 1 longform article (Instapaper / Reader)',
     iosScheme: 'instapaper://',
     androidPackage: 'com.instapaper.android',
     webFallbackUrl: 'https://www.instapaper.com',
