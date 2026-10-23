@@ -284,7 +284,7 @@ export default function PauseScreen() {
         )}
       </ScrollView>
 
-      {/* Built-in Flexible Checklist Modal (Flat todo & Tasks) */}
+      {/* Built-in Flexible Checklist Modal (DIY & Tasks) */}
       <ChecklistModal
         visible={activeChecklistType !== null}
         onClose={() => setActiveChecklistType(null)}
@@ -295,7 +295,7 @@ export default function PauseScreen() {
         onAddItem={addChecklistItem}
       />
 
-      {/* Built-in Mindful Timer Modal (Meditation, Walk, Watch the dock) */}
+      {/* Built-in Mindful Timer Modal (Meditation, Walk, Look out the window) */}
       <MindfulTimerModal
         visible={activeMindfulTimer !== null}
         onClose={() => setActiveMindfulTimer(null)}

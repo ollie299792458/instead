@@ -33,7 +33,7 @@ export const ChecklistModal: React.FC<ChecklistModalProps> = ({
 }) => {
   const [newTitle, setNewTitle] = useState('');
   const [selectedEffort, setSelectedEffort] = useState<EffortTag>('5 min');
-  const [selectedRoom, setSelectedRoom] = useState<string>('Flat');
+  const [selectedRoom, setSelectedRoom] = useState<string>('Home');
 
   const filteredItems = items.filter((i) => i.listType === listType);
   const suggestions = listType === 'flat_todo' ? DIY_SUGGESTIONS : TASK_SUGGESTIONS;
@@ -62,11 +62,11 @@ export const ChecklistModal: React.FC<ChecklistModalProps> = ({
           <View style={styles.header}>
             <View>
               <Text style={styles.headerTitle}>
-                {listType === 'flat_todo' ? 'Home & DIY Checklist' : 'Quick To-Do List'}
+                {listType === 'flat_todo' ? 'DIY & Home Projects' : 'Quick To-Do List'}
               </Text>
               <Text style={styles.headerSubtitle}>
                 {listType === 'flat_todo'
-                  ? 'Pick one small job at home instead of scrolling'
+                  ? 'Pick one small project or job to tackle instead of scrolling'
                   : 'Get one lingering task off your mind'}
               </Text>
             </View>

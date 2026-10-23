@@ -82,13 +82,13 @@ export default function OnboardingScreen() {
             </View>
 
             <View style={styles.categoryCard}>
-              <Text style={styles.categoryTitle}>🛠️ Work & Flat DIY</Text>
-              <Text style={styles.categoryItems}>• Emails • Tasks • Flat todo (DIY home jobs checklist)</Text>
+              <Text style={styles.categoryTitle}>🛠️ Work & Home DIY</Text>
+              <Text style={styles.categoryItems}>• Emails • Tasks • DIY & Home Projects Checklist</Text>
             </View>
 
             <View style={styles.categoryCard}>
               <Text style={styles.categoryTitle}>🌿 Other</Text>
-              <Text style={styles.categoryItems}>• Meditation • 10m Walk • Watch the dock</Text>
+              <Text style={styles.categoryItems}>• Meditation • 10m Walk • Look out the window</Text>
             </View>
 
             <TouchableOpacity style={styles.primaryBtn} onPress={() => setStep(3)}>

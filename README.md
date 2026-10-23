@@ -13,14 +13,14 @@
 ## What's Included
 
 ### Seeded Alternatives (From your note)
-- **Study:** Duolingo / Babbel, Flashcards (Anki), Peak Brain Training
-- **Read:** Instapaper, Google News, Reading book
-- **Work:** Emails, Tasks, Flat todo (DIY home jobs checklist)
-- **Other:** Meditation (3-min mindful breather), Walk (10-min prompt), Watch the dock (2-min open awareness visual)
+- **Study:** Language Practice, Flashcards (Anki), Brain Training
+- **Read:** Saved Articles, Daily News, Read a Book
+- **Work:** Quick Inbox Triage, To-Do List, DIY & Home Projects Checklist
+- **Other:** Breathing Reset (3-min mindful breather), Step Outside (10-min walk), Look Out the Window (2-min open awareness visual)
 
 ### Built-in Micro-Tools
-- **Flat Todo (DIY):** Built-in checklist with 1-tap starter chips (*Tighten loose hinge, Oil squeaky door, Clear one surface, Sort tool drawer, Measure space, Bleed radiators*) and effort tags (`5 min`, `15 min`, `Weekend`).
-- **Mindful Timer:** In-app audio/haptic timers for Meditation, Walk, and Watch the dock.
+- **DIY & Home Projects:** Built-in checklist with 1-tap starter chips (*Tighten loose hinge, Oil squeaky door, Clear one surface, Sort tool drawer, Measure space, Bleed radiators*) and effort tags (`5 min`, `15 min`, `Weekend`).
+- **Mindful Timer:** In-app audio/haptic timers for Breathing Reset, Step Outside, and Look Out the Window.
 
 ---
 
