@@ -12,6 +12,7 @@ import {
   loadInitialAppData,
   persistAlternatives,
   persistChecklistItems,
+  persistLastShownReasonIds,
   persistReasons,
   persistSessions,
   persistStreak,
@@ -92,6 +93,7 @@ export const useInsteadStore = create<InsteadState>((set, get) => ({
       checklistItems: data.checklistItems,
       sessions: data.sessions,
       promiseStreak: data.promiseStreak,
+      lastShownReasonIds: data.lastShownReasonIds || [],
     });
     get().startPauseSession('manual');
   },
@@ -102,14 +104,18 @@ export const useInsteadStore = create<InsteadState>((set, get) => ({
     const alts = selectAlternatives(alternatives, 3);
     const sessionId = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
 
-    set((state) => ({
+    const nextLastShown = reason
+      ? [reason.id, ...lastShownReasonIds.filter((id) => id !== reason.id)].slice(0, 4)
+      : lastShownReasonIds;
+
+    set({
       activeReason: reason,
       suggestedAlternatives: alts,
       activeSessionId: sessionId,
-      lastShownReasonIds: reason
-        ? [reason.id, ...state.lastShownReasonIds.filter((id) => id !== reason.id)].slice(0, 3)
-        : state.lastShownReasonIds,
-    }));
+      lastShownReasonIds: nextLastShown,
+    });
+
+    persistLastShownReasonIds(nextLastShown);
   },
 
   shuffleAlternatives: () => {

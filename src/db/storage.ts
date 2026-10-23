@@ -3,12 +3,13 @@ import { Alternative, ChecklistItem, PauseSession, Reason } from '../types/inste
 import { DIY_SUGGESTIONS, SEED_ALTERNATIVES, STARTER_REASONS } from './seed';
 
 const STORAGE_KEYS = {
-  REASONS: '@instead_reasons_v4',
-  ALTERNATIVES: '@instead_alternatives_v4',
-  CHECKLIST_ITEMS: '@instead_checklist_items_v4',
-  SESSIONS: '@instead_sessions_v4',
-  PROMISE_STREAK: '@instead_streak_v4',
-  INITIALIZED: '@instead_initialized_v4',
+  REASONS: '@instead_reasons_v5',
+  ALTERNATIVES: '@instead_alternatives_v5',
+  CHECKLIST_ITEMS: '@instead_checklist_items_v5',
+  SESSIONS: '@instead_sessions_v5',
+  PROMISE_STREAK: '@instead_streak_v5',
+  INITIALIZED: '@instead_initialized_v5',
+  LAST_SHOWN_REASONS: '@instead_last_shown_reasons_v5',
 };
 
 export interface AppStateData {
@@ -17,6 +18,7 @@ export interface AppStateData {
   checklistItems: ChecklistItem[];
   sessions: PauseSession[];
   promiseStreak: number;
+  lastShownReasonIds: string[];
   lastPromiseKeptDate: string | null;
 }
 
@@ -58,6 +60,7 @@ export async function loadInitialAppData(): Promise<AppStateData> {
         [STORAGE_KEYS.CHECKLIST_ITEMS, JSON.stringify(starterChecklist)],
         [STORAGE_KEYS.SESSIONS, JSON.stringify([])],
         [STORAGE_KEYS.PROMISE_STREAK, '0'],
+        [STORAGE_KEYS.LAST_SHOWN_REASONS, JSON.stringify([])],
         [STORAGE_KEYS.INITIALIZED, 'true'],
       ]);
 
@@ -67,18 +70,20 @@ export async function loadInitialAppData(): Promise<AppStateData> {
         checklistItems: starterChecklist,
         sessions: [],
         promiseStreak: 0,
+        lastShownReasonIds: [],
         lastPromiseKeptDate: null,
       };
     }
 
     // Subsequent runs: read from storage
-    const [reasonsRaw, alternativesRaw, checklistRaw, sessionsRaw, streakRaw] =
+    const [reasonsRaw, alternativesRaw, checklistRaw, sessionsRaw, streakRaw, lastShownRaw] =
       await AsyncStorage.multiGet([
         STORAGE_KEYS.REASONS,
         STORAGE_KEYS.ALTERNATIVES,
         STORAGE_KEYS.CHECKLIST_ITEMS,
         STORAGE_KEYS.SESSIONS,
         STORAGE_KEYS.PROMISE_STREAK,
+        STORAGE_KEYS.LAST_SHOWN_REASONS,
       ]);
 
     const reasons: Reason[] = reasonsRaw[1] ? JSON.parse(reasonsRaw[1]) : [];
@@ -86,6 +91,7 @@ export async function loadInitialAppData(): Promise<AppStateData> {
     const checklistItems: ChecklistItem[] = checklistRaw[1] ? JSON.parse(checklistRaw[1]) : [];
     const sessions: PauseSession[] = sessionsRaw[1] ? JSON.parse(sessionsRaw[1]) : [];
     const promiseStreak = streakRaw[1] ? parseInt(streakRaw[1], 10) : 0;
+    const lastShownReasonIds: string[] = lastShownRaw[1] ? JSON.parse(lastShownRaw[1]) : [];
 
     return {
       reasons,
@@ -93,6 +99,7 @@ export async function loadInitialAppData(): Promise<AppStateData> {
       checklistItems,
       sessions,
       promiseStreak,
+      lastShownReasonIds,
       lastPromiseKeptDate: null,
     };
   } catch (err) {
@@ -103,6 +110,7 @@ export async function loadInitialAppData(): Promise<AppStateData> {
       checklistItems: [],
       sessions: [],
       promiseStreak: 0,
+      lastShownReasonIds: [],
       lastPromiseKeptDate: null,
     };
   }
@@ -126,4 +134,8 @@ export async function persistSessions(sessions: PauseSession[]): Promise<void> {
 
 export async function persistStreak(streak: number): Promise<void> {
   await AsyncStorage.setItem(STORAGE_KEYS.PROMISE_STREAK, streak.toString());
+}
+
+export async function persistLastShownReasonIds(ids: string[]): Promise<void> {
+  await AsyncStorage.setItem(STORAGE_KEYS.LAST_SHOWN_REASONS, JSON.stringify(ids));
 }
