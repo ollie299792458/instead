@@ -1,5 +1,13 @@
 import { create } from 'zustand';
-import { Alternative, ChecklistItem, ChecklistListType, EffortTag, PauseSession, Reason } from '../types/instead';
+import {
+  Alternative,
+  AlternativeCategory,
+  ChecklistItem,
+  ChecklistListType,
+  EffortTag,
+  PauseSession,
+  Reason,
+} from '../types/instead';
 import {
   loadInitialAppData,
   persistAlternatives,
@@ -41,7 +49,16 @@ interface InsteadState {
 
   // Reason & Alternative management
   addReason: (text: string) => Promise<void>;
+  toggleReason: (id: string) => Promise<void>;
+  deleteReason: (id: string) => Promise<void>;
   toggleAlternative: (id: string) => Promise<void>;
+  addAlternative: (
+    title: string,
+    category: AlternativeCategory,
+    subtitle?: string,
+    linkUrl?: string
+  ) => Promise<void>;
+  deleteAlternative: (id: string) => Promise<void>;
 }
 
 export const useInsteadStore = create<InsteadState>((set, get) => ({
@@ -244,11 +261,63 @@ export const useInsteadStore = create<InsteadState>((set, get) => ({
     await persistReasons(nextReasons);
   },
 
+  toggleReason: async (id: string) => {
+    const { reasons } = get();
+    const nextReasons = reasons.map((r) =>
+      r.id === id ? { ...r, archived: !r.archived } : r
+    );
+    set({ reasons: nextReasons });
+    await persistReasons(nextReasons);
+  },
+
+  deleteReason: async (id: string) => {
+    const { reasons } = get();
+    const nextReasons = reasons.filter((r) => r.id !== id);
+    set({ reasons: nextReasons });
+    await persistReasons(nextReasons);
+  },
+
   toggleAlternative: async (id: string) => {
     const { alternatives } = get();
     const nextAlternatives = alternatives.map((a) =>
       a.id === id ? { ...a, enabled: !a.enabled } : a
     );
+    set({ alternatives: nextAlternatives });
+    await persistAlternatives(nextAlternatives);
+  },
+
+  addAlternative: async (title, category, subtitle, linkUrl) => {
+    const { alternatives } = get();
+    const trimmedTitle = title.trim();
+    const trimmedSubtitle = subtitle?.trim() || 'Custom alternative';
+    const trimmedUrl = linkUrl?.trim();
+
+    // Check if the link is a custom URL scheme or web URL
+    const isScheme = trimmedUrl && !trimmedUrl.startsWith('http://') && !trimmedUrl.startsWith('https://');
+
+    const newAlt: Alternative = {
+      id: `alt_custom_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+      title: trimmedTitle,
+      category,
+      subtitle: trimmedSubtitle,
+      iosScheme: isScheme ? trimmedUrl : undefined,
+      webFallbackUrl: trimmedUrl ? (isScheme ? undefined : trimmedUrl) : undefined,
+      timeOfDayPref: 'any',
+      enabled: true,
+      timesSuggested: 0,
+      timesChosen: 0,
+      lastChosenAt: null,
+      createdAt: Date.now(),
+    };
+
+    const nextAlternatives = [newAlt, ...alternatives];
+    set({ alternatives: nextAlternatives });
+    await persistAlternatives(nextAlternatives);
+  },
+
+  deleteAlternative: async (id: string) => {
+    const { alternatives } = get();
+    const nextAlternatives = alternatives.filter((a) => a.id !== id);
     set({ alternatives: nextAlternatives });
     await persistAlternatives(nextAlternatives);
   },
