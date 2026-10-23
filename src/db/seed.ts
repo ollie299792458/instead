@@ -17,7 +17,7 @@ export const STARTER_REASONS: Omit<Reason, 'timesShown' | 'timesRedirected' | 'l
   },
   {
     id: 'reason-3',
-    text: 'After 30 minutes on TikTok I always feel groggy, distracted, and mildly dissatisfied with my day.',
+    text: 'After 30 minutes of short form video I always feel groggy, distracted, and mildly dissatisfied with my day.',
     source: 'onboarding',
     archived: false,
     createdAt: 1700000000002,

@@ -426,16 +426,16 @@ export default function ManageScreen() {
         {activeTab === 'shortcuts' && (
           <View>
             <Text style={styles.sectionSubtitle}>
-              How to automatically open Instead before TikTok out of habit or muscle memory.
+              How to automatically open Instead before short form video (e.g. TikTok, Reels, Shorts, etc.) out of habit or muscle memory.
             </Text>
 
             <View style={styles.guideCard}>
               <Text style={styles.guideTitle}>🤖 Android Options</Text>
               <Text style={styles.guideStep}>
-                1. <Text style={styles.bold}>Muscle Memory Hijack:</Text> Move TikTok off your home screen dock or main folder, and place <Text style={styles.bold}>Instead</Text> in that exact spot.
+                1. <Text style={styles.bold}>Muscle Memory Hijack:</Text> Move short form video apps off your home screen dock or main folder, and place <Text style={styles.bold}>Instead</Text> in that exact spot.
               </Text>
               <Text style={styles.guideStep}>
-                2. <Text style={styles.bold}>MacroDroid / Tasker:</Text> Set trigger "App Opened: TikTok" → Action: "Launch App: Instead" (or Open URL <Text style={styles.code}>instead://pause</Text>).
+                2. <Text style={styles.bold}>MacroDroid / Tasker:</Text> Set trigger "App Opened: TikTok / Instagram / YouTube" → Action: "Launch App: Instead" (or Open URL <Text style={styles.code}>instead://pause</Text>).
               </Text>
             </View>
 
@@ -443,7 +443,7 @@ export default function ManageScreen() {
               <Text style={styles.guideTitle}>🍎 iOS Shortcuts Guide</Text>
               <Text style={styles.guideStep}>1. Open Apple's built-in <Text style={styles.bold}>Shortcuts</Text> app.</Text>
               <Text style={styles.guideStep}>2. Tap <Text style={styles.bold}>Automation</Text> → New Automation.</Text>
-              <Text style={styles.guideStep}>3. Choose <Text style={styles.bold}>App</Text> → Select TikTok (Is Opened, Run Immediately).</Text>
+              <Text style={styles.guideStep}>3. Choose <Text style={styles.bold}>App</Text> → Select your short form video apps (e.g. TikTok, Instagram, YouTube) (Is Opened, Run Immediately).</Text>
               <Text style={styles.guideStep}>
                 4. Action: <Text style={styles.bold}>Open URL</Text> → enter <Text style={styles.code}>instead://pause</Text>.
               </Text>

@@ -1,6 +1,6 @@
 # Instead — Pause, Remember Why, Do Instead
 
-> A calm, non-adversarial micro-contract app to replace impulse TikTok/Shorts scrolling with intentional actions derived from first principles.
+> A calm, non-adversarial micro-contract app to replace impulse short form video scrolling with intentional actions derived from first principles.
 
 ## The Behavioral Philosophy
 1. **The Micro-Contract:** Never promise not to scroll in the future. You only promise to open this app for 10 seconds first.
@@ -42,5 +42,5 @@ npx expo start
 ```
 
 ### Automatic Interception (Android & iOS)
-- **Android Muscle Memory:** Move TikTok off your dock or home screen, and place **Instead** in that exact position. Alternatively, use MacroDroid/Tasker with trigger "App Opened: TikTok" → Action "Open URL: `instead://pause`".
-- **iOS Shortcuts:** Create a Personal Automation: When TikTok opens → Open URL `instead://pause`.
+- **Android Muscle Memory:** Move short form video apps off your dock or home screen, and place **Instead** in that exact position. Alternatively, use MacroDroid/Tasker with trigger "App Opened: TikTok / Instagram / YouTube" → Action "Open URL: `instead://pause`".
+- **iOS Shortcuts:** Create a Personal Automation: When short form video (e.g. TikTok, Reels, Shorts, etc.) opens → Open URL `instead://pause`.

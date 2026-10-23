@@ -102,12 +102,12 @@ export default function OnboardingScreen() {
             <Text style={styles.badge}>STEP 3 OF 3</Text>
             <Text style={styles.title}>The Micro-Contract</Text>
             <Text style={styles.subtitle}>
-              Do not promise future-you will never watch TikTok again. You only promise one thing:
+              Do not promise future-you will never watch short form video again. You only promise one thing:
             </Text>
 
             <View style={styles.contractCard}>
               <Text style={styles.contractQuote}>
-                "Before I open TikTok, I will open Instead and pause for 10 seconds. After 10
+                "Before I open short form video (e.g. TikTok, Reels, Shorts, etc.), I will open Instead and pause for 10 seconds. After 10
                 seconds, I am completely free to watch or do something else."
               </Text>
             </View>
