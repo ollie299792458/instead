@@ -20,6 +20,7 @@ export interface Alternative {
   title: string;
   category: AlternativeCategory;
   subtitle: string;
+  selectedPresetId?: string;
   iosScheme?: string;
   androidPackage?: string;
   webFallbackUrl?: string;

@@ -52,6 +52,16 @@ interface InsteadState {
   toggleReason: (id: string) => Promise<void>;
   deleteReason: (id: string) => Promise<void>;
   toggleAlternative: (id: string) => Promise<void>;
+  updateAlternativeTarget: (
+    id: string,
+    updates: {
+      selectedPresetId?: string;
+      iosScheme?: string;
+      androidPackage?: string;
+      webFallbackUrl?: string;
+      subtitle?: string;
+    }
+  ) => Promise<void>;
   addAlternative: (
     title: string,
     category: AlternativeCategory,
@@ -281,6 +291,15 @@ export const useInsteadStore = create<InsteadState>((set, get) => ({
     const { alternatives } = get();
     const nextAlternatives = alternatives.map((a) =>
       a.id === id ? { ...a, enabled: !a.enabled } : a
+    );
+    set({ alternatives: nextAlternatives });
+    await persistAlternatives(nextAlternatives);
+  },
+
+  updateAlternativeTarget: async (id, updates) => {
+    const { alternatives } = get();
+    const nextAlternatives = alternatives.map((a) =>
+      a.id === id ? { ...a, ...updates } : a
     );
     set({ alternatives: nextAlternatives });
     await persistAlternatives(nextAlternatives);

@@ -11,7 +11,8 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useInsteadStore } from '../src/store/useInsteadStore';
-import { AlternativeCategory } from '../src/types/instead';
+import { Alternative, AlternativeCategory } from '../src/types/instead';
+import { APP_REDIRECT_PRESETS, AppRedirectPreset } from '../src/constants/appPresets';
 
 export default function ManageScreen() {
   const router = useRouter();
@@ -22,6 +23,7 @@ export default function ManageScreen() {
     toggleReason,
     deleteReason,
     toggleAlternative,
+    updateAlternativeTarget,
     addAlternative,
     deleteAlternative,
   } = useInsteadStore();
@@ -36,6 +38,10 @@ export default function ManageScreen() {
   const [altLink, setAltLink] = useState('');
   const [showAddAlt, setShowAddAlt] = useState(false);
 
+  // Editing existing alternative target modal/section state
+  const [editingAltId, setEditingAltId] = useState<string | null>(null);
+  const [customUrlInput, setCustomUrlInput] = useState('');
+
   const handleAddReason = async () => {
     if (!newReasonText.trim()) return;
     await addReason(newReasonText.trim());
@@ -49,6 +55,31 @@ export default function ManageScreen() {
     setAltSubtitle('');
     setAltLink('');
     setShowAddAlt(false);
+  };
+
+  const handleSelectPreset = async (alt: Alternative, preset: AppRedirectPreset) => {
+    await updateAlternativeTarget(alt.id, {
+      selectedPresetId: preset.id,
+      iosScheme: preset.iosScheme,
+      androidPackage: preset.androidPackage,
+      webFallbackUrl: preset.webFallbackUrl,
+      subtitle: `5 mins • Opens ${preset.name}`,
+    });
+  };
+
+  const handleSaveCustomTarget = async (alt: Alternative) => {
+    const trimmed = customUrlInput.trim();
+    if (!trimmed) return;
+    const isScheme = !trimmed.startsWith('http://') && !trimmed.startsWith('https://');
+    await updateAlternativeTarget(alt.id, {
+      selectedPresetId: 'custom',
+      iosScheme: isScheme ? trimmed : undefined,
+      androidPackage: undefined,
+      webFallbackUrl: isScheme ? undefined : trimmed,
+      subtitle: `Opens custom: ${trimmed}`,
+    });
+    setEditingAltId(null);
+    setCustomUrlInput('');
   };
 
   const categories: AlternativeCategory[] = ['Study', 'Read', 'Work', 'Other'];
@@ -175,7 +206,7 @@ export default function ManageScreen() {
           <View>
             <View style={styles.sectionHeaderBetween}>
               <Text style={styles.sectionSubtitleFlex}>
-                Toggle or add alternatives you want suggested on the pause screen.
+                Configure target apps, toggle items, or add custom alternatives.
               </Text>
               <TouchableOpacity
                 style={styles.addCustomAltBtn}
@@ -236,7 +267,7 @@ export default function ManageScreen() {
                 <Text style={styles.inputLabel}>App Link / Web URL (optional)</Text>
                 <TextInput
                   style={styles.formInput}
-                  placeholder="e.g. https://open.spotify.com or app scheme"
+                  placeholder="e.g. https://open.spotify.com or spotify://"
                   placeholderTextColor="#64748B"
                   value={altLink}
                   onChangeText={setAltLink}
@@ -255,43 +286,136 @@ export default function ManageScreen() {
 
             {alternatives.map((alt) => {
               const isCustom = alt.id.startsWith('alt_custom_');
+              const presets = APP_REDIRECT_PRESETS[alt.id];
+              const isEditing = editingAltId === alt.id;
+
               return (
-                <View key={alt.id} style={[styles.altRow, !alt.enabled && styles.cardDisabled]}>
-                  <View style={{ flex: 1, marginRight: 10 }}>
-                    <View style={styles.altHeaderRow}>
-                      <Text style={[styles.altTitle, !alt.enabled && styles.cardTextDisabled]}>
-                        {alt.title}
+                <View key={alt.id} style={[styles.altCardWrapper, !alt.enabled && styles.cardDisabled]}>
+                  <View style={styles.altRow}>
+                    <View style={{ flex: 1, marginRight: 10 }}>
+                      <View style={styles.altHeaderRow}>
+                        <Text style={[styles.altTitle, !alt.enabled && styles.cardTextDisabled]}>
+                          {alt.title}
+                        </Text>
+                        {isCustom && (
+                          <View style={styles.customBadge}>
+                            <Text style={styles.customBadgeText}>Custom</Text>
+                          </View>
+                        )}
+                        {alt.builtInTool && (
+                          <View style={styles.builtInBadge}>
+                            <Text style={styles.builtInBadgeText}>Built-in</Text>
+                          </View>
+                        )}
+                      </View>
+                      <Text style={styles.altSubtitle}>
+                        {alt.category} • {alt.subtitle}
                       </Text>
+                    </View>
+
+                    <View style={styles.cardButtonsRight}>
+                      <TouchableOpacity
+                        style={[styles.toggleBtn, alt.enabled && styles.toggleBtnActive]}
+                        onPress={() => toggleAlternative(alt.id)}
+                      >
+                        <Text style={[styles.toggleBtnText, alt.enabled && styles.toggleBtnTextActive]}>
+                          {alt.enabled ? 'ON' : 'OFF'}
+                        </Text>
+                      </TouchableOpacity>
+
                       {isCustom && (
-                        <View style={styles.customBadge}>
-                          <Text style={styles.customBadgeText}>Custom</Text>
-                        </View>
+                        <TouchableOpacity
+                          style={styles.deleteBtn}
+                          onPress={() => deleteAlternative(alt.id)}
+                        >
+                          <Text style={styles.deleteBtnText}>✕</Text>
+                        </TouchableOpacity>
                       )}
                     </View>
-                    <Text style={styles.altSubtitle}>
-                      {alt.category} • {alt.subtitle}
-                    </Text>
                   </View>
 
-                  <View style={styles.cardButtonsRight}>
-                    <TouchableOpacity
-                      style={[styles.toggleBtn, alt.enabled && styles.toggleBtnActive]}
-                      onPress={() => toggleAlternative(alt.id)}
-                    >
-                      <Text style={[styles.toggleBtnText, alt.enabled && styles.toggleBtnTextActive]}>
-                        {alt.enabled ? 'ON' : 'OFF'}
-                      </Text>
-                    </TouchableOpacity>
+                  {/* App Redirect Configuration Section (if presets exist or is custom app) */}
+                  {presets && (
+                    <View style={styles.presetsSection}>
+                      <Text style={styles.presetSectionTitle}>Redirect App:</Text>
+                      <View style={styles.presetChipsRow}>
+                        {presets.map((preset) => {
+                          const isSelected =
+                            alt.selectedPresetId === preset.id ||
+                            (!alt.selectedPresetId && presets[0].id === preset.id);
 
-                    {isCustom && (
-                      <TouchableOpacity
-                        style={styles.deleteBtn}
-                        onPress={() => deleteAlternative(alt.id)}
-                      >
-                        <Text style={styles.deleteBtnText}>✕</Text>
-                      </TouchableOpacity>
-                    )}
-                  </View>
+                          return (
+                            <TouchableOpacity
+                              key={preset.id}
+                              style={[
+                                styles.presetChip,
+                                isSelected && styles.presetChipSelected,
+                              ]}
+                              onPress={() => handleSelectPreset(alt, preset)}
+                            >
+                              <Text
+                                style={[
+                                  styles.presetChipText,
+                                  isSelected && styles.presetChipTextSelected,
+                                ]}
+                              >
+                                {isSelected ? `✓ ${preset.name}` : preset.name}
+                              </Text>
+                            </TouchableOpacity>
+                          );
+                        })}
+
+                        <TouchableOpacity
+                          style={[
+                            styles.presetChip,
+                            alt.selectedPresetId === 'custom' && styles.presetChipSelected,
+                          ]}
+                          onPress={() => {
+                            setEditingAltId(isEditing ? null : alt.id);
+                            setCustomUrlInput(alt.webFallbackUrl || alt.iosScheme || '');
+                          }}
+                        >
+                          <Text
+                            style={[
+                              styles.presetChipText,
+                              alt.selectedPresetId === 'custom' && styles.presetChipTextSelected,
+                            ]}
+                          >
+                            {alt.selectedPresetId === 'custom' ? '✓ Custom URL' : 'Custom...'}
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  )}
+
+                  {/* Custom URL Editor drawer */}
+                  {isEditing && (
+                    <View style={styles.customUrlDrawer}>
+                      <Text style={styles.customUrlPrompt}>Enter app scheme or web URL:</Text>
+                      <TextInput
+                        style={styles.customUrlInput}
+                        placeholder="e.g. babbel:// or https://..."
+                        placeholderTextColor="#64748B"
+                        value={customUrlInput}
+                        onChangeText={setCustomUrlInput}
+                        autoCapitalize="none"
+                      />
+                      <View style={styles.customUrlBtnRow}>
+                        <TouchableOpacity
+                          style={styles.saveCustomUrlBtn}
+                          onPress={() => handleSaveCustomTarget(alt)}
+                        >
+                          <Text style={styles.saveCustomUrlBtnText}>Save App Link</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={styles.cancelCustomUrlBtn}
+                          onPress={() => setEditingAltId(null)}
+                        >
+                          <Text style={styles.cancelCustomUrlBtnText}>Cancel</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  )}
                 </View>
               );
             })}
@@ -551,16 +675,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
+  altCardWrapper: {
+    backgroundColor: '#1E293B',
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#334155',
+  },
   altRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#1E293B',
-    borderRadius: 14,
-    padding: 14,
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: '#334155',
   },
   altHeaderRow: {
     flexDirection: 'row',
@@ -587,6 +713,104 @@ const styles = StyleSheet.create({
     color: '#E0F2FE',
     fontSize: 10,
     fontWeight: 'bold',
+  },
+  builtInBadge: {
+    backgroundColor: '#065F46',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  builtInBadgeText: {
+    color: '#D1FAE5',
+    fontSize: 10,
+    fontWeight: 'bold',
+  },
+  presetsSection: {
+    marginTop: 10,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#334155',
+  },
+  presetSectionTitle: {
+    color: '#94A3B8',
+    fontSize: 11,
+    fontWeight: '600',
+    marginBottom: 6,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  presetChipsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  presetChip: {
+    backgroundColor: '#0F172A',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#334155',
+  },
+  presetChipSelected: {
+    backgroundColor: '#0284C7',
+    borderColor: '#38BDF8',
+  },
+  presetChipText: {
+    color: '#94A3B8',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  presetChipTextSelected: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+  },
+  customUrlDrawer: {
+    marginTop: 10,
+    backgroundColor: '#0F172A',
+    padding: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#0284C7',
+  },
+  customUrlPrompt: {
+    color: '#CBD5E1',
+    fontSize: 12,
+    marginBottom: 6,
+  },
+  customUrlInput: {
+    backgroundColor: '#1E293B',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#334155',
+    color: '#F8FAFC',
+    padding: 8,
+    fontSize: 13,
+    marginBottom: 8,
+  },
+  customUrlBtnRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  saveCustomUrlBtn: {
+    backgroundColor: '#10B981',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+  saveCustomUrlBtnText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 12,
+  },
+  cancelCustomUrlBtn: {
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+  },
+  cancelCustomUrlBtnText: {
+    color: '#94A3B8',
+    fontSize: 12,
   },
   toggleBtn: {
     paddingHorizontal: 14,
